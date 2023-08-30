@@ -8,7 +8,6 @@ import { setUserData } from "../redux/userData"; // Import the action
 // hhjj
 
 const Header = () => {
-  const name = "ammad";
   let { user, userId, logoutUser, userName, userData } =
     useContext(AuthContext);
   const dispatch = useDispatch();

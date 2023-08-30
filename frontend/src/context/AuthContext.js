@@ -18,16 +18,27 @@ import { persistor } from "../redux/store";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  let authTokens = localStorage.getItem("authTokens")
+    ? JSON.parse(localStorage.getItem("authTokens"))
+    : null;
+  // let userId = authTokens?.user_id || null;
+
+  // let user = authTokens?.access || null;
+  // let userEmail = authTokens?.email || null;
+  // let userName = authTokens?.username || null;
+  let isLoggedIn = localStorage.getItem("authTokens") ? true : false;
+
+  // console.log(authTokens, userId, user, userEmail, userName);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const {
     user,
-    authTokens,
     userId,
     userName,
     userEmail,
-    isLoggedIn,
+    // isLoggedIn,
     loading,
     userData,
     prevLocation,
@@ -48,9 +59,8 @@ export const AuthProvider = ({ children }) => {
     let data = await response.json();
 
     if (data) {
-      // localStorage.setItem("authTokens", JSON.stringify(data));
-      dispatch(setAuthTokens(data));
-      dispatch(setUser(jwtDecode(data.access)));
+      localStorage.setItem("authTokens", JSON.stringify(data));
+      dispatch(setUser(data.access));
       dispatch(setUserId(data.user_id));
       dispatch(setUserEmail(data.email));
       dispatch(setUserName(data.username));
@@ -66,37 +76,40 @@ export const AuthProvider = ({ children }) => {
   };
 
   let logoutUser = () => {
-    // localStorage.removeItem("authTokens");
+    console.log("Logout triggered");
+    localStorage.removeItem("authTokens");
+    dispatch(resetUserData());
+    persistor.purge();
     // dispatch(setAuthTokens(null));
     // dispatch(setUser(null));
     // dispatch(setUserId(null));
     // dispatch(setUserEmail(null));
     // dispatch(setUserName(null));
-    // persistor.purge();
-    dispatch(resetUserData());
-    dispatch(setIsLoggedIn(false));
+    // dispatch(setIsLoggedIn(false));
   };
 
-  const updateToken = async () => {
-    const response = await fetch("http://127.0.0.1:8000/token/refresh/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ refresh: authTokens?.refresh }),
-    });
+  const updateToken = async (token) => {
+    if (token) {
+      console.log("Update Token Running");
 
-    const data = await response.json();
-    if (response.status === 200) {
-      dispatch(setAuthTokens(data));
-      dispatch(setUser(jwtDecode(data.access)));
-      // localStorage.setItem("authTokens", JSON.stringify(data));
-    } else {
-      logoutUser();
-    }
+      const response = await fetch("http://127.0.0.1:8000/token/refresh/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ refresh: token }),
+      });
 
-    if (loading) {
-      dispatch(setLoading(false));
+      const data = await response.json();
+      if (response.status === 200) {
+        localStorage.setItem("authTokens", JSON.stringify(data));
+      } else {
+        logoutUser();
+      }
+
+      if (loading) {
+        dispatch(setLoading(false));
+      }
     }
   };
 
@@ -117,10 +130,15 @@ export const AuthProvider = ({ children }) => {
       updateToken();
     }
 
-    const REFRESH_INTERVAL = 1000 * 59 * 1; // 24 minutes
+    const REFRESH_INTERVAL = 1000 * 10 * 1; // 24 minutes
     let interval = setInterval(() => {
       if (authTokens) {
-        updateToken();
+        let UpdateAuthTokens = localStorage.getItem("authTokens")
+          ? JSON.parse(localStorage.getItem("authTokens"))
+          : null;
+        let refreshToken = UpdateAuthTokens?.refresh;
+        console.log(refreshToken);
+        updateToken(refreshToken);
       }
     }, REFRESH_INTERVAL);
     return () => clearInterval(interval);

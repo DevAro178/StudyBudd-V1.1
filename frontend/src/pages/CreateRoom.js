@@ -25,7 +25,6 @@ const CreateRoom = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            // Authorization: "Bearer " + String(authTokens.access),
           },
           signal: abortController.signal,
         });
@@ -249,7 +248,6 @@ export default CreateRoom;
 //     method: "POST",
 //     headers: {
 //       "Content-Type": "application/json",
-//       Authorization: "Bearer " + authTokens.access,
 //     },
 //     body: JSON.stringify({
 //       topic: formData.topic,

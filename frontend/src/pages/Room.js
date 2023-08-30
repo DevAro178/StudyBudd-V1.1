@@ -9,8 +9,8 @@ import { useSelector } from "react-redux";
 
 function Room() {
   let { id } = useParams();
-  // let { userId, authTokens } = useContext(AuthContext);
-  const { authTokens, userId } = useSelector((state) => state.userData);
+  let { userId, authTokens } = useContext(AuthContext);
+  // const {  } = useSelector((state) => state.userData);
 
   let [roomDetails, setRoomDetails] = useState([]);
   let [roomMessages, setRoomMessages] = useState([]);
@@ -26,7 +26,6 @@ function Room() {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            // Authorization: "Bearer " + String(authTokens.access),
           },
           signal: abortController.signal,
         });

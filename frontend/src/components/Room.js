@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 // import AuthContext from "../context/AuthContext";
 
 const Room = ({ room }) => {
-  // let {userId} =useContext(AuthContext);
   return (
     <div key={room.id} className="roomListRoom">
       <div className="roomListRoom__header">

@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserId } from "../redux/userData"; // Import the action
+import AuthContext from "../context/AuthContext";
 
 function MyComponent() {
   // To dispatch actions
   const dispatch = useDispatch();
 
   // Get data from the store
-  const userId = useSelector((state) => state.userData.user_id);
+  let { userId } = useContext(AuthContext);
 
   // Example function that dispatches an action
   const handleUpdateUserId = (newId) => {

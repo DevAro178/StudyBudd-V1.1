@@ -13,7 +13,6 @@ const ActivitiesList = (restRoute) => {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              // Authorization: "Bearer " + String(authTokens.access),
             },
             signal: abortController.signal,
           }
