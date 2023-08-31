@@ -4,36 +4,43 @@ import TopicsListMini from "../components/TopicsListMini";
 import RoomsList from "../components/RoomsList";
 import ActivitiesList from "../components/ActivitiesList";
 import { useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const HomePage = () => {
   let [activitiesRoute, setActivitiesRoute] = useState("GetMessages");
   let [roomListRoute, setRoomList] = useState("GetRooms");
 
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
+  const { searchData, topicID } = useSelector((state) => state.variables);
+
+  // const location = useLocation();
+  // const queryParams = new URLSearchParams(location.search);
 
   // Retrieve the topicID query parameter
-  const topicID = queryParams.get("topicID")
-    ? queryParams.get("topicID")
-    : null;
+  // const topicID = queryParams.get("topicID")
+  //   ? queryParams.get("topicID")
+  //   : null;
 
   // Retrieve the topicID query parameter
-  const roomName = queryParams.get("q") ? queryParams.get("q") : null;
+  // const roomName = queryParams.get("q") ? queryParams.get("q") : null;
 
   useEffect(() => {
     if (topicID) {
       console.log(topicID);
       setActivitiesRoute(`GetMessagesByTopicID/${topicID}`);
       setRoomList(`GetRoomsByTopicID/${topicID}`);
+    } else {
+      setActivitiesRoute("GetMessages");
+      setRoomList("GetRooms");
     }
   }, [topicID]);
 
   useEffect(() => {
-    if (roomName) {
-      console.log(topicID);
-      setRoomList(`GetRoomsByTitleName/${roomName}`);
+    if (searchData) {
+      setRoomList(`GetRoomsByTitleName/${searchData}`);
+    } else {
+      setRoomList(`GetRooms/`);
     }
-  }, [roomName]);
+  }, [searchData]);
 
   // useEffect(() => {
   //   console.log(activitiesRoute, roomListRoute);

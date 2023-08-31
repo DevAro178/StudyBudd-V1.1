@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-const TopicsListMini = (id) => {
+import { setTopicID } from "../redux/variables";
+import { useDispatch } from "react-redux";
+
+const TopicsListMini = ({ id }) => {
   let [topics, setTopics] = useState([]);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -45,18 +49,31 @@ const TopicsListMini = (id) => {
       </div>
       <ul className="topics__list">
         <li>
-          <a href="/" className={!id.id && "active"}>
+          <a
+            onClick={(e) => {
+              e.preventDefault();
+              dispatch(setTopicID(null));
+            }}
+            className={!id ? "active" : undefined}
+          >
             All <span>{topics.length}</span>
           </a>
         </li>
         {topics.map((topic, index) => (
           <li key={topic.id} data-topic-id={topic.id}>
             <a
-              href={`/?topicID=${topic.id}`}
+              onClick={(e) => {
+                e.preventDefault();
+                dispatch(setTopicID(topic.id));
+              }}
+              // className={
+              //   id && id && topic.id.toString() === id.toString()
+              //     ? "active"
+              //     : ""
+              // }
+
               className={
-                id && id.id && topic.id.toString() === id.id.toString()
-                  ? "active"
-                  : ""
+                topic.id.toString() === id?.toString() ? "active" : undefined
               }
             >
               {topic.name} <span>{topic.room_count}</span>
