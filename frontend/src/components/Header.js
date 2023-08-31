@@ -8,8 +8,7 @@ import { setUserData } from "../redux/userData"; // Import the action
 // hhjj
 
 const Header = () => {
-  let { user, userId, logoutUser, userName, userData } =
-    useContext(AuthContext);
+  let { user, userId, logoutUser, userData } = useContext(AuthContext);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -49,7 +48,7 @@ const Header = () => {
     return () => {
       abortController.abort();
     };
-  }, []);
+  }, [user]);
 
   const [isMenuVisible, setMenuVisibility] = useState(false);
   function handleClick() {
@@ -86,7 +85,7 @@ const Header = () => {
           </label>
         </form>
         <nav className="header__menu">
-          {user ? (
+          {userData ? (
             <div className="header__user">
               <Link to="/">
                 <div className="avatar avatar--medium active">

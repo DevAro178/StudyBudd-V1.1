@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   let logoutUser = () => {
-    console.log("Logout triggered");
+    // console.log("Logout triggered");
     localStorage.removeItem("authTokens");
     dispatch(resetUserData());
     persistor.purge();
@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }) => {
 
   const updateToken = async (token) => {
     if (token) {
-      console.log("Update Token Running");
+      // console.log("Update Token Running");
 
       const response = await fetch("http://127.0.0.1:8000/token/refresh/", {
         method: "POST",
@@ -130,14 +130,15 @@ export const AuthProvider = ({ children }) => {
       updateToken();
     }
 
-    const REFRESH_INTERVAL = 1000 * 10 * 1; // 24 minutes
+    const REFRESH_INTERVAL = 1000 * 60 * 59; // 24 minutes
     let interval = setInterval(() => {
       if (authTokens) {
         let UpdateAuthTokens = localStorage.getItem("authTokens")
           ? JSON.parse(localStorage.getItem("authTokens"))
           : null;
         let refreshToken = UpdateAuthTokens?.refresh;
-        console.log(refreshToken);
+        // console.log(refreshToken);
+
         updateToken(refreshToken);
       }
     }, REFRESH_INTERVAL);
